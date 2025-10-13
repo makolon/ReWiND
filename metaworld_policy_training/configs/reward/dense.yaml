@@ -1,0 +1,5 @@
+# @package _global_
+
+reward_model: 
+  name: 'dense'
+  success_bonus: 64.0

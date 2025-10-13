@@ -1,0 +1,109 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - koch: null
+  - metaworld: null
+  - algorithm: null
+  - reward: null
+
+wandb_notes: ""
+
+logging:
+  wandb: true
+  wandb_entity_name: your-wandb-entity
+  wandb_project_name: rewind-policy-training
+  wandb_group_name: "${reward_model.name}_${general_training.algo}_${environment.env_id}_action_chunk_release"
+  log_dir: "./logs/${logging.wandb_group_name}"
+  eval_freq: 5000
+  video_freq: 5000
+
+general_training:
+  algo: null # Set to null so you must set algorithm yaml
+  n_steps: 128
+  seed: 42
+  pretrained: false
+  action_noise: null
+  learning_rate: 1e-3
+  dense_rewards_at_end: false
+  entropy_term: 'auto'
+
+  # gamma: 0.998 # (1/(1-gamma)) = 500 steps
+  gamma: 0.99 # (1/(1-gamma)) = 200 steps
+  
+  terminate_on_success: true
+
+  # IQL-specific parameters
+  policy_extraction: 'awr' # awr or ddpg
+  awr_advantage_temp: 1.0 # iql only
+  ddpg_bc_weight: 0. # iql only
+  
+  # CQL-specific parameters
+  cql_min_q_weight: 1.0
+  cql_min_q_temp: 1.0
+  use_calibrated_q: false # calibrated QL https://arxiv.org/pdf/2303.05479
+
+  action_chunk_size: 10
+
+  # below not used for now
+  random_reset: false
+  norm_input: false
+  norm_output: false
+  time_reward: 1.0
+  threshold_reward: false
+  time_penalty: 0.0
+
+  ckpt_path: null
+
+
+online_training:
+  total_time_steps: 100000
+  mix_buffers_ratio: 0.5 # Ratio of offline data during online training. Set to 0 for no offline data
+  warm_start_online_rl: true
+  learning_starts: 1000
+  gradient_steps: 1
+
+offline_training:
+  offline_h5_path: null # Set to null so you must set environment yaml
+  offline_training_steps: 15000
+  offline_tasks: ["opening window"]
+  ckpt_path: null
+
+model:
+  policy_type: 'RnnMlpPolicy'
+  policy_layer_norm: true
+  critic_layer_norm: true
+  pi_net_arch: [256, 256]
+  qf_net_arch: [256, 256]
+
+reward_model: 
+  name: null # Set to null so you must set reward_model yaml
+  batch_size: 128
+  model_path: null
+  success_bonus: 10.0
+  reward_at_every_step: false
+
+environment:
+  text_string: null # Set to null so you must set environment yaml
+  n_envs: 3
+  train_freq_num: 1
+  train_freq_type: 'step'
+  dir_add: ""
+  video_path: null
+  pca_path: null
+  transform_base_path: null
+  transform_model_path: null
+  ignore_language: false
+  is_state_based: false
+  use_proprio: true
+  robot_disabled: false
+
+evaluation:
+  # Evaluation configuration for RoboCLIPv2
+  model_path: null  # Path to the model directory
+  model_type: rlpd  # Type of model to evaluate (rlpd, iql, bc, cql)
+  n_episodes: 10    # Number of episodes to evaluate
+  deterministic: false  # Whether to use deterministic actions
+  render: false     # Whether to render the environment
+  seed: 42          # Random seed
+  wandb: true      # Whether to log to wandb

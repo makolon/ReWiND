@@ -1,0 +1,12 @@
+# @package _global_
+
+general_training:
+  dense_rewards_at_end: false
+
+reward_model: 
+  name: 'sparse'
+  success_bonus: 64.0
+  reward_divisor: 1.0
+
+environment:
+  is_state_based: false

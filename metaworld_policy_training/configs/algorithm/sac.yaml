@@ -1,0 +1,31 @@
+# @package _global_
+
+defaults:
+  - _self_
+
+logging:
+  eval_freq: 0
+  video_freq: 10000
+
+general_training:
+  algo: sac
+  name: sac
+  action_noise: 0.2 # sigma
+  learning_rate: 3e-4
+
+
+model:
+  policy_layer_norm: true
+  critic_layer_norm: true
+  # pi_net_arch: [1024, 768, 512]
+  # qf_net_arch: [1024, 1024, 512]
+  pi_net_arch: [768, 512]
+  qf_net_arch: [768, 512]
+
+
+offline_training:
+  offline_training_steps: 0 # SAC is online-only
+
+online_training:
+  total_time_steps: 500000
+  learning_starts: 0

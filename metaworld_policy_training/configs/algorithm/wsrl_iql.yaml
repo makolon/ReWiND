@@ -1,0 +1,51 @@
+# @package _global_
+
+defaults:
+  - _self_
+
+# Because RLPD is slower, we will log more frequently
+logging:
+  eval_freq: 10000
+  video_freq: 10000
+
+general_training:
+  algo: rlpd
+  name: wsrl_iql
+  action_noise: 0.0 # sigma
+  learning_rate: 1e-4
+
+  # offline rl parameters
+  n_critics: 5
+  n_critics_to_sample: 2
+
+  # RLPD-specific parameters
+  rlpd_train_critic_with_entropy: false
+  entropy_term: 'auto'
+  # Note: RLPD's offline step uses default params defined in base_config.yaml
+  rlpd_offline_algo: iql
+  action_chunk_size: 10
+
+  # IQL-specific parameters
+  policy_extraction: 'awr' # awr or ddpg
+  awr_advantage_temp: 1.0 # iql only
+
+  learning_starts: 5
+
+model:
+  policy_layer_norm: false
+  critic_layer_norm: false
+  pi_net_arch: [768, 512, 256]
+  qf_net_arch: [768, 512, 256]
+
+offline_training:
+  offline_training_steps: 15000
+  ckpt_path: null  
+  critic_update_ratio: 1
+
+online_training:
+  total_time_steps: 100000
+  mix_buffers_ratio: 0.5 # WSRL does not use old replay buffer
+  warm_start_online_rl: true # main change for WSRL
+  learning_starts: 4000
+  gradient_steps: 1
+  critic_update_ratio: 4

@@ -1,0 +1,24 @@
+# @package _global_
+
+defaults:
+  - _self_
+
+offline_training:
+  offline_h5_path: "path/to/your/offline_dataset.h5"
+  offline_tasks: ['button-press-v2', 'button-press-topdown-wall-v2', 'coffee-pull-v2', 'dial-turn-v2', 'door-open-v2',
+                  'door-unlock-v2', 'drawer-close-v2', 'faucet-open-v2', 'handle-press-v2', 'handle-pull-side-v2',
+                  'peg-insert-side-v2', 'pick-place-v2', 'plate-slide-v2', 'plate-slide-back-side-v2', 'push-v2',
+                  'reach-v2', 'stick-push-v2', 'stick-pull-v2', 'window-open-v2', 'hand-insert-v2']
+
+environment:
+  cfg_name: "metaworld_off_on_15"
+  n_envs: 1
+  train_freq_num: 1
+  train_freq_type: 'step'
+  #env_id: "window-close-v2" # eval task
+  env_id: "button-press-wall-v2" # eval task
+  ignore_language: false
+
+# Reward divisor is environment-dependent
+reward_model:
+  reward_divisor: 1.0

@@ -1,0 +1,54 @@
+# @package _global_
+
+defaults:
+  - _self_
+
+# Because RLPD is slower, we will log more frequently
+logging:
+  eval_freq: 0
+  video_freq: 5000
+
+general_training:
+  algo: rlpd
+  name: rlpd_iql
+  action_noise: 0.0 # sigma
+  learning_rate: 3e-4
+
+  # offline rl parameters
+  n_critics: 5
+  n_critics_to_sample: 2
+
+  # RLPD-specific parameters
+  rlpd_train_critic_with_entropy: true
+  # Note: RLPD's offline step uses default params defined in base_config.yaml
+  rlpd_offline_algo: iql
+  action_chunk_size: 60
+  learning_starts: 3000
+
+  # IQL-specific parameters
+  policy_extraction: 'awr' # awr or ddpg
+  awr_advantage_temp: 2.5 # iql only
+
+model:
+  policy_layer_norm: false
+  critic_layer_norm: true
+  pi_net_arch: [768, 512, 256]
+  qf_net_arch: [768, 512, 256]
+  # pi_net_arch: [768, 512]
+  # qf_net_arch: [768, 512]
+
+offline_training:
+  offline_training_steps: 10_000
+  ckpt_path: null  # Path to load checkpoint from, if provided will skip offline training
+  critic_update_ratio: 1
+
+environment:
+  train_freq_type: 'episode'
+
+online_training:
+  total_time_steps: 50000
+  mix_buffers_ratio: 0.5 
+  warm_start_online_rl: true
+  critic_update_ratio: 4
+  gradient_steps: 1
+  learning_starts: 3000
